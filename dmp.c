@@ -72,7 +72,7 @@ static struct attribute_group stat_attr_group = {
     .attrs = stat_attrs,
 };
 
-static int dmp_map(struct dm_target *ti, struct bio *bio)
+static int dmp_map(struct dm_target *ti, struct bio *bio, union map_info *map_context)
 {
     struct dmp_target *dmp_t = (struct dmp_target *)ti->private;
     unsigned int bio_size = bio->bi_iter.bi_size;
@@ -90,9 +90,7 @@ static int dmp_map(struct dm_target *ti, struct bio *bio)
 
     bio->bi_bdev = dmp_t->dev->bdev;
 
-    submit_bio(bio);
-
-    return DM_MAPIO_SUBMITTED;
+    return DM_MAPIO_REMAPPED;
 }
 
 static int dmp_ctr(struct dm_target *ti, unsigned int argc, char **argv)
